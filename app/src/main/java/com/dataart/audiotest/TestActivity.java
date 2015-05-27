@@ -12,50 +12,51 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
-/**Byte Code for simple for:
-
-aload_1
-invokeinterface java/util/List/size()I 1
-istore_2
-iconst_0
-istore_3
-iconst_0
-istore 4
-iload 4
-iload_2
-if_icmpge 21
-iload_3
-aload_1
-iload 4
-invokeinterface java/util/List/get(I)Ljava/lang/Object; 2
-checkcast java/lang/String
-invokevirtual java/lang/String/length()I
-iadd
-istore_3
-iinc 4 1
-goto 8
-iload_3
-ireturn
-
-Byte Code for ForEach:
-iconst_0
-istore_2
-aload_1
-invokeinterface java/util/List/iterator()Ljava/util/Iterator; 1
-astore_3
-aload_3
-invokeinterface java/util/Iterator/hasNext()Z 1
-ifeq 17
-iload_2
-aload_3
-invokeinterface java/util/Iterator/next()Ljava/lang/Object; 1
-checkcast java/lang/String
-invokevirtual java/lang/String/length()I
-iadd
-istore_2
-goto 6
-iload_2
-ireturn
+/**
+ * Byte Code for simple for:
+ * <p/>
+ * aload_1
+ * invokeinterface java/util/List/size()I 1
+ * istore_2
+ * iconst_0
+ * istore_3
+ * iconst_0
+ * istore 4
+ * iload 4
+ * iload_2
+ * if_icmpge 21
+ * iload_3
+ * aload_1
+ * iload 4
+ * invokeinterface java/util/List/get(I)Ljava/lang/Object; 2
+ * checkcast java/lang/String
+ * invokevirtual java/lang/String/length()I
+ * iadd
+ * istore_3
+ * iinc 4 1
+ * goto 8
+ * iload_3
+ * ireturn
+ * <p/>
+ * Byte Code for ForEach:
+ * iconst_0
+ * istore_2
+ * aload_1
+ * invokeinterface java/util/List/iterator()Ljava/util/Iterator; 1
+ * astore_3
+ * aload_3
+ * invokeinterface java/util/Iterator/hasNext()Z 1
+ * ifeq 17
+ * iload_2
+ * aload_3
+ * invokeinterface java/util/Iterator/next()Ljava/lang/Object; 1
+ * checkcast java/lang/String
+ * invokevirtual java/lang/String/length()I
+ * iadd
+ * istore_2
+ * goto 6
+ * iload_2
+ * ireturn
  */
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -83,44 +84,30 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        long startPoint = System.currentTimeMillis();
         if (v == arraylistTest) {
-            ArrayList<String> generated = generateArrayList();
-            results.append("\n ArrayList generated in " + (System.currentTimeMillis() - startPoint) + " milliseconds");
-            startPoint = System.currentTimeMillis();
-            testSimpleFor(generated);
-            long diff = System.currentTimeMillis() - startPoint;
-            results.append("\nArrayList | SimpleFor = " + diff);
-            startPoint = System.currentTimeMillis();
-            testForEach(generated);
-            diff = System.currentTimeMillis() - startPoint;
-            results.append("\nArrayList | ForEach = " + diff);
+            startTest(generateArrayList());
         } else if (v == vectorTest) {
-            Vector<String> generated = generateVector();
-            results.append("\n Vector generated in " + (System.currentTimeMillis() - startPoint) + " milliseconds");
-            startPoint = System.currentTimeMillis();
-            testSimpleFor(generated);
-            long diff = System.currentTimeMillis() - startPoint;
-            results.append("\nVector | SimpleFor = " + diff);
-            startPoint = System.currentTimeMillis();
-            testForEach(generated);
-            diff = System.currentTimeMillis() - startPoint;
-            results.append("\nVector | ForEach = " + diff);
+            startTest(generateVector());
         } else if (v == linkedlistTest) {
-            LinkedList<String> generated = generateLinkedList();
-            results.append("\n LinkedList generated in " + (System.currentTimeMillis() - startPoint) + " milliseconds");
-            startPoint = System.currentTimeMillis();
-            testSimpleFor(generated);
-            long diff = System.currentTimeMillis() - startPoint;
-            results.append("\nLinkedList | SimpleFor = " + diff);
-            startPoint = System.currentTimeMillis();
-            testForEach(generated);
-            diff = System.currentTimeMillis() - startPoint;
-            results.append("\nLinkedList | ForEach = " + diff);
+            startTest(generateLinkedList());
         }
     }
 
-    public int testForEach(List<String> generated) {
+    void startTest(List<String> generated) {
+        long startPoint = System.currentTimeMillis();
+        String tag = generated.getClass().getSimpleName();
+        results.append(tag + " | generated in " + (System.currentTimeMillis() - startPoint) + " milliseconds\n");
+        startPoint = System.currentTimeMillis();
+        testSimpleFor(generated);
+        long diff = System.currentTimeMillis() - startPoint;
+        results.append(tag + " | SimpleFor = " + diff + "\n");
+        startPoint = System.currentTimeMillis();
+        testForEach(generated);
+        diff = System.currentTimeMillis() - startPoint;
+        results.append(tag + " | ForEach = " + diff + "\n");
+    }
+
+    int testForEach(List<String> generated) {
         int allCharsCounter = 0;
         for (String item : generated) {
             allCharsCounter += item.length();
@@ -128,7 +115,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         return allCharsCounter;
     }
 
-    public int testSimpleFor(List<String> generated) {
+    int testSimpleFor(List<String> generated) {
         int size = generated.size();
         int allCharsCounter = 0;
         for (int i = 0; i < size; i++) {
@@ -146,7 +133,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
-    public Vector<String> generateVector() {
+    Vector<String> generateVector() {
         Random random = new Random();
         Vector<String> result = new Vector<>(ITEMS_NUMBER);
         for (int i = 0; i < ITEMS_NUMBER; i++) {
@@ -155,7 +142,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         return result;
     }
 
-    public LinkedList<String> generateLinkedList() {
+    LinkedList<String> generateLinkedList() {
         Random random = new Random();
         LinkedList<String> result = new LinkedList<>();
         for (int i = 0; i < ITEMS_NUMBER; i++) {
